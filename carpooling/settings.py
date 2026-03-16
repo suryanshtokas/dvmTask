@@ -73,6 +73,9 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+
 WSGI_APPLICATION = 'carpooling.wsgi.application'
 
 
