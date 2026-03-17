@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'network',
     'trips',
     'carpool',
+
+    # third-party
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

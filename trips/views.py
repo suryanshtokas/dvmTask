@@ -8,6 +8,12 @@ from .models import Trip, TripNode
 from .forms import TripCreateForm
 from .utils import find_shortest_route
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from .serializers import TripSerializer, TripNodeSerializer
+
 
 class DriverRequiredMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
@@ -88,3 +94,34 @@ class TripCancelView(DriverRequiredMixin, View):
         trip.save()
         messages.success(request, "Trip cancelled.")
         return redirect("trip_list")
+
+
+class UpdateCurrentNodeAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, pk):
+        trip  = get_object_or_404(Trip, pk=pk, driver=request.user)
+
+        if trip.status not in ["pending", "active"]:
+            return Response({"error": "Only pending or active trips can be updated."},
+                             status=status.HTTP_400_BAD_REQUEST)
+
+        node_id = request.data.get("node_id")
+        if not node_id:
+            return Response({"error": "node_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        trip_node = trip.trip_nodes.filter(node_id=node_id, is_passed=False).first()
+        if not trip_node:
+            return Response({"error": "Invalid node_id or node already passed."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        trip.trip_nodes.filter(order__lte=trip_node.order).update(is_passed=True)
+        trip.current_node_id = node_id
+        trip.status = "active"
+
+        if trip.current_node_id == trip.end_node_id:
+            trip.status = "completed"
+        
+        trip.save()
+
+        return Response({"message": "Current Node/Trip Status updated succesfully."}, status=status.HTTP_200_OK)
+    
