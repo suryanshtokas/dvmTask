@@ -1,0 +1,15 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>My Trips</h2>
+    <a href="{% url 'trip_create' %}">Create New Trip</a>
+    <hr>
+    {% for trip in trips %}
+        <div>
+            <p>{{ trip.start_node }} → {{ trip.end_node }} ({{ trip.status }})</p>
+            <a href="{% url 'trip_detail' trip.pk %}">View Details</a>
+        </div>
+        <hr>
+    {% empty %}
+        <p>You have no trips yet.</p>
+    {% endfor %}
+{% endblock %}

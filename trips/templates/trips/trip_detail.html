@@ -1,0 +1,24 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>Trip: {{ trip.start_node }} → {{ trip.end_node }}</h2>
+    <p>Status: {{ trip.status }}</p>
+    <p>Current Node: {{ trip.current_node }}</p>
+    <p>Max Passengers: {{ trip.max_passengers }}</p>
+
+    <h3>Route</h3>
+    <ul>
+        {% for trip_node in passed_nodes %}
+            <li>✅ {{ trip_node.node }}</li>
+        {% endfor %}
+        {% for trip_node in remaining_nodes %}
+            <li>⏳ {{ trip_node.node }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if trip.status == 'pending' %}
+        <form method="POST" action="{% url 'trip_cancel' trip.pk %}">
+            {% csrf_token %}
+            <button type="submit">Cancel Trip</button>
+        </form>
+    {% endif %}
+{% endblock %}
