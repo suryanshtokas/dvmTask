@@ -12,6 +12,7 @@ class TripNodeSerializer(serializers.ModelSerializer):
 
 class TripSerializer(serializers.ModelSerializer):
     trip_nodes = TripNodeSerializer(many=True, read_only=True)
+    driver_username = serializers.CharField(source="driver.username", read_only=True)
 
     class Meta:
         model = Trip

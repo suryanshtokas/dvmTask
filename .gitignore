@@ -6,3 +6,6 @@ db.sqlite3
 
 # Pycache
 __pycache__/
+
+# Creds
+creds.txt
