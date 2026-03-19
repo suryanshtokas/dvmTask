@@ -7,6 +7,7 @@ from network.models import Node
 from .models import Trip, TripNode
 from .forms import TripCreateForm
 from .utils import find_shortest_route
+from accounts.mixins import DriverRequiredMixin
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,16 +15,6 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .serializers import TripSerializer, TripNodeSerializer
 
-
-class DriverRequiredMixin(LoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
-        if request.user.profile.role != "driver":
-            messages.error(request, "Only drivers can access this page.")
-            return redirect("dashboard")
-        return super().dispatch(request, *args, **kwargs)
-    
 
 class TripCreateView(DriverRequiredMixin, CreateView):
     model = Trip
