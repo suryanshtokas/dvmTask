@@ -1,0 +1,24 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>Carpool Requests for your Trip</h2>
+    <p>Trip: {{ trip.start_node }} → {{ trip.end_node }}</p>
+    <hr>
+    {% for carpool_request in carpool_requests %}
+        <div>
+            <p>Passenger: {{ carpool_request.passenger.username }}</p>
+            <p>Pickup: {{ carpool_request.pickup_node }}</p>
+            <p>Dropoff: {{ carpool_request.dropoff_node }}</p>
+            {% if not carpool_request.offers.filter(trip=trip).exists %}
+                <form method="POST" action="{% url 'carpool_offer_create' trip.pk carpool_request.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Make Offer</button>
+                </form>
+            {% else %}
+                <p>Offer already made</p>
+            {% endif %}
+        </div>
+        <hr>
+    {% empty %}
+        <p>No carpool requests near your route.</p>
+    {% endfor %}
+{% endblock %}

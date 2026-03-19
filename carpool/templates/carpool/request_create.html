@@ -1,0 +1,9 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>Request a Carpool</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Request</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>My Carpool Requests</h2>
+    <a href="{% url 'carpool_request_create' %}">New Request</a>
+    <hr>
+    {% for request in carpool_requests %}
+        <div>
+            <p>{{ request.pickup_node }} → {{ request.dropoff_node }} ({{ request.status }})</p>
+            <a href="{% url 'carpool_request_detail' request.pk %}">View Offers</a>
+            {% if request.status == 'pending' %}
+                <form method="POST" action="{% url 'carpool_request_cancel' request.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Cancel</button>
+                </form>
+            {% endif %}
+        </div>
+        <hr>
+    {% empty %}
+        <p>No carpool requests yet.</p>
+    {% endfor %}
+{% endblock %}
