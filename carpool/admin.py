@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import CarpoolRequest, CarpoolOffer, FareConfig
 
-@admin.register(CarpoolRequest)
+@admin.register(FareConfig)
 class FareConfigAdmin(admin.ModelAdmin):
     list_display = ["unit_price", "base_fee", "updated_at"]
 

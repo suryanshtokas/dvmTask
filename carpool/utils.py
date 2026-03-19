@@ -43,7 +43,7 @@ def insert_passenger_into_route(route, pickup_node, dropoff_node):
 
     for i in range(len(route)):
         for j in range(i+1, len(route)+1):
-            new_route = route[:i] + pickup_node + route[i:j] + dropoff_node + route[j:]
+            new_route = route[:i] + [pickup_node] + route[i:j] + [dropoff_node] + route[j:]
             # removing duplicates
             seen = set()
             unique_route = []

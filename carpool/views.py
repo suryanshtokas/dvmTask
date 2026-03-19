@@ -96,6 +96,7 @@ class CarpoolRequestCancelView(PassengerRequiredMixin, View):
 
 
 class DriverCarpoolRequestListView(DriverRequiredMixin, ListView):
+    model = CarpoolRequest
     template_name = "carpool/driver_request_list.html"
     context_object_name = "carpool_requests"
 
@@ -110,7 +111,15 @@ class DriverCarpoolRequestListView(DriverRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["trip"] = get_object_or_404(Trip, pk=self.kwargs["trip_pk"], driver=self.request.user)
+        trip = get_object_or_404(Trip, pk=self.kwargs["trip_pk"], driver=self.request.user)
+        context["trip"] = trip
+
+        offered_request_ids = CarpoolOffer.objects.filter(trip=trip).values_list("carpool_request_id", flat=True)
+        context["offered_request_ids"] = set(offered_request_ids)
+
+        print("CONTEXT KEYS:", context.keys())
+        print("OFFERED IDS IN CONTEXT:", context.get("offered_request_ids"))
+
         return context  
     
 
@@ -125,7 +134,7 @@ class CarpoolOfferCreateView(DriverRequiredMixin, View):
             return redirect("driver_carpool_request_list", trip_pk=trip_pk)
         
         confirmed_offers = CarpoolOffer.objects.filter(trip=trip, status="accepted").select_related(
-            "carpooL_request__pickup_node", "carpool_request__dropoff_node"
+            "carpool_request__pickup_node", "carpool_request__dropoff_node"
         )
 
         confirmed_passengers = [

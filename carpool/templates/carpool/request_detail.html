@@ -3,21 +3,36 @@
     <h2>Carpool Request: {{ carpool_request.pickup_node }} → {{ carpool_request.dropoff_node }}</h2>
     <p>Status: {{ carpool_request.status }}</p>
     <hr>
-    <h3>Driver Offers</h3>
-    {% for offer in offers %}
-        <div>
-            <p>Driver: {{ offer.trip.driver.username }}</p>
-            <p>Detour: {{ offer.detour_length }} hops</p>
-            <p>Fare: ${{ offer.fare }}</p>
-            {% if carpool_request.status == 'pending' %}
+
+    {% if carpool_request.status == 'confirmed' %}
+        {% for offer in carpool_request.offers.all %}
+            {% if offer.status == 'accepted' %}
+                <h3>Confirmed Carpool Details</h3>
+                <p>Driver: {{ offer.trip.driver.username }}</p>
+                <p>Trip Route: {{ offer.trip.start_node }} → {{ offer.trip.end_node }}</p>
+                <p>Trip Status: {{ offer.trip.status }}</p>
+                <p>Pickup: {{ carpool_request.pickup_node }}</p>
+                <p>Dropoff: {{ carpool_request.dropoff_node }}</p>
+                <p>Detour Driver Takes: {{ offer.detour_length }} hops</p>
+                <p>Your Fare: ${{ offer.fare }}</p>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h3>Driver Offers</h3>
+        {% for offer in offers %}
+            <div>
+                <p>Driver: {{ offer.trip.driver.username }}</p>
+                <p>Trip Route: {{ offer.trip.start_node }} → {{ offer.trip.end_node }}</p>
+                <p>Detour: {{ offer.detour_length }} hops</p>
+                <p>Fare: ${{ offer.fare }}</p>
                 <form method="POST" action="{% url 'carpool_offer_select' offer.pk %}">
                     {% csrf_token %}
                     <button type="submit">Accept Offer</button>
                 </form>
-            {% endif %}
-        </div>
-        <hr>
-    {% empty %}
-        <p>No offers yet.</p>
-    {% endfor %}
+            </div>
+            <hr>
+        {% empty %}
+            <p>No offers yet.</p>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
