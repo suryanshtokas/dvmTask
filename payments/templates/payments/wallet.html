@@ -1,0 +1,18 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>My Wallet</h2>
+    <p>Balance: ${{ wallet.balance }}</p>
+    <a href="{% url 'topup' %}">Top Up</a>
+    <hr>
+    <h3>Transaction History</h3>
+    {% for transaction in transactions %}
+        <div>
+            <p>{{ transaction.transaction_type }} - ${{ transaction.amount }}</p>
+            <p>{{ transaction.description }}</p>
+            <p>{{ transaction.created_at }}</p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No transactions yet.</p>
+    {% endfor %}
+{% endblock %}

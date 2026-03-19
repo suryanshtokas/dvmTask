@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'network',
     'trips',
     'carpool',
+    'payments',
 
     # third-party
     'rest_framework',
