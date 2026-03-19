@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import AuthenticationForm
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, View
 from django.urls import reverse_lazy
 from django.contrib.auth import login
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from .models import Profile
 from django.shortcuts import redirect
+from django.contrib import messages
 
 
 class UserRegisterView(CreateView):
@@ -35,6 +36,12 @@ class CustomLogoutView(LoginRequiredMixin, LogoutView):
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.profile.role:
+            return redirect("role_select")
+        return super().dispatch(request, *args, **kwargs)
+
     # depending on the role, we can show different dashboards
     def get_template_names(self):
         role = self.request.user.profile.role
@@ -60,3 +67,21 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             profile_form.save()
             return redirect("dashboard")
         return self.render_to_response(self.get_context_data())
+    
+
+class RoleSelectView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        if request.user.profile.role:
+            return redirect("dashboard")
+        return render(request, "accounts/role_select.html")
+    
+    def post(self, request):
+        role = request.POST.get("role")
+        if role not in ["driver", "passenger"]:
+            messages.error(request, "Please select a valid role.")
+            return render(request, "accounts/role_select.html")
+        request.user.profile.role = role
+        request.user.profile.save()
+        messages.success(request, "Role selected successfully.")
+        return redirect("dashboard")

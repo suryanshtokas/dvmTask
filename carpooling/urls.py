@@ -23,4 +23,5 @@ urlpatterns = [
     path('trips/', include('trips.urls')),
     path('carpool/', include('carpool.urls')),
     path('payments/', include('payments.urls')),
+    path('auth/', include('allauth.urls')),
 ]

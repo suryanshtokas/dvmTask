@@ -1,0 +1,10 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+    <h2>Select Your Role</h2>
+    <p>Welcome! Please select how you want to use the platform.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button name="role" value="passenger" type="submit">I am a Passenger</button>
+        <button name="role" value="driver" type="submit">I am a Driver</button>
+    </form>
+{% endblock %}
