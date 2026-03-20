@@ -21,7 +21,7 @@ class UserRegisterView(CreateView):
         user.profile.role = form.cleaned_data["role"]
         user.profile.save()
 
-        login(self.request, user)
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
         return redirect(self.success_url)
     
 
