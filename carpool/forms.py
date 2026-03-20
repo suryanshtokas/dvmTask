@@ -8,6 +8,10 @@ class CarpoolRequestForm(forms.ModelForm):
         model = CarpoolRequest
         fields = ["pickup_node", "dropoff_node"]
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super().clean()
         pickup_node = cleaned_data.get("pickup_node")
@@ -22,5 +26,12 @@ class CarpoolRequestForm(forms.ModelForm):
             
             if not Node.objects.filter(id=dropoff_node.id).exists():
                 raise forms.ValidationError("Invalid dropoff node.")
+            
+        # stopping same user from creating multiple requests at once (to avoid spam)
+        if CarpoolRequest.objects.filter(
+            passenger=self.user,
+            status__in=["pending", "confirmed"]
+        ).exists():
+            raise forms.ValidationError("You already have an active carpool request.")
         
         return cleaned_data

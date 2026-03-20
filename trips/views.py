@@ -6,7 +6,7 @@ from django.contrib import messages
 from network.models import Node
 from .models import Trip, TripNode
 from .forms import TripCreateForm
-from .utils import find_shortest_route
+from .utils import find_route
 from accounts.mixins import DriverRequiredMixin
 
 from rest_framework.views import APIView
@@ -31,7 +31,7 @@ class TripCreateView(DriverRequiredMixin, CreateView):
         end_node = form.cleaned_data["end_node"]
 
         # finding shortest route
-        route = find_shortest_route(start_node, end_node)
+        route = find_route(start_node, end_node)
 
         if route is None:
             form.add_error(None, "No route found between the selected nodes.")

@@ -7,7 +7,7 @@ from network.models import Node
 from trips.models import Trip, TripNode
 from .models import CarpoolOffer, CarpoolRequest
 from .forms import CarpoolRequestForm
-from .utils import get_proximity_nodes, get_remaining_route, calculate_detour, calculate_fare
+from .utils import get_proximity_nodes, get_remaining_route, calculate_detour, calculate_fare, optimize_route
 
 from .serializers import CarpoolRequestSerializer, CarpoolOfferSerializer
 from rest_framework.views import APIView
@@ -21,6 +21,11 @@ class CarpoolRequestCreateView(PassengerRequiredMixin, CreateView):
     form_class = CarpoolRequestForm
     template_name = "carpool/request_create.html"
     success_url = reverse_lazy("carpool_request_list")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         carpool_request = form.save(commit=False)
@@ -73,6 +78,35 @@ class CarpoolOfferSelectView(PassengerRequiredMixin, View):
 
         carpool_request.status = "confirmed"
         carpool_request.save()
+
+        # get all passengers on this trip
+        confirmed_offers = CarpoolOffer.objects.filter(
+            trip=offer.trip,
+            status="accepted",
+        ).select_related("carpool_request__pickup_node", "carpool_request__dropoff_node")
+
+        confirmed_passengers = [
+            (o.carpool_request.pickup_node, o.carpool_request.dropoff_node) for o in confirmed_offers
+        ]
+
+        remaining_route = get_remaining_route(offer.trip)
+        optimized_route = optimize_route(remaining_route, confirmed_passengers)
+
+        last_passed = offer.trip.trip_nodes.filter(
+            is_passed=True
+        ).order_by("-order").first()
+        start_order = (last_passed.order + 1) if last_passed else 0
+
+        # delete all the unpassed nodes and replace with the new optimized route
+        offer.trip.trip_nodes.filter(is_passed=False).delete()
+        for index, node in enumerate(optimized_route):
+            TripNode.objects.create(
+                trip=offer.trip,
+                node=node,
+                order=start_order + index,
+                is_passed=False
+            )
+                
 
         messages.success(request, f"Carpool confirmed with {offer.trip.driver.username}!")
         return redirect("carpool_request_detail", pk=carpool_request.pk)
