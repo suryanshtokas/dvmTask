@@ -43,7 +43,7 @@ class TopUpView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class DriverEarningsView(LoginRequiredMixin, ListView):
+class DriverEarningsView(LoginRequiredMixin, TemplateView):
     template_name = "payments/driver_earnings.html"
 
     def get_context_data(self, **kwargs):
