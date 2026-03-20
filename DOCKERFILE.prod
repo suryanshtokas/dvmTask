@@ -2,7 +2,7 @@
 # BUILDER #
 ###########
 
-FROM python:3.12.4-slim-buster as builder
+FROM python:3.12.4-slim-bookworm as builder
 
 WORKDIR /usr/src/app
 
@@ -21,7 +21,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 # FINAL #
 #########
 
-FROM python:3.12.4-slim-buster
+FROM python:3.12.4-slim-bookworm
 
 RUN mkdir -p /home/app
 RUN addgroup --system app && adduser --system --group app
