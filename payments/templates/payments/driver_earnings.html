@@ -1,13 +1,13 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
     <h2>My Earnings</h2>
-    <p>Wallet Balance: ${{ wallet.balance }}</p>
-    <p>Total Earnings: ${{ total_earnings }}</p>
+    <p><strong>Wallet Balance: ${{ wallet.balance }}</strong></p>
+    <p><strong>Total Earnings: ${{ total_earnings }}</strong></p>
     <hr>
     {% for earning in earnings %}
         <div>
-            <p>${{ earning.amount }} - {{ earning.description }}</p>
-            <p>{{ earning.created_at }}</p>
+            <p>${{ earning.amount }} — {{ earning.description }}</p>
+            <p>{{ earning.created_at|date:"d M Y H:i" }}</p>
         </div>
         <hr>
     {% empty %}

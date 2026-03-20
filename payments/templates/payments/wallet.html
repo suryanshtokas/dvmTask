@@ -1,15 +1,15 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
     <h2>My Wallet</h2>
-    <p>Balance: ${{ wallet.balance }}</p>
-    <a href="{% url 'topup' %}">Top Up</a>
+    <p><strong>Balance: ${{ wallet.balance }}</strong></p>
+    <a href="{% url 'topup' %}">Top Up Wallet</a>
     <hr>
     <h3>Transaction History</h3>
     {% for transaction in transactions %}
         <div>
-            <p>{{ transaction.transaction_type }} - ${{ transaction.amount }}</p>
+            <p>{{ transaction.get_transaction_type_display }} — ${{ transaction.amount }}</p>
             <p>{{ transaction.description }}</p>
-            <p>{{ transaction.created_at }}</p>
+            <p>{{ transaction.created_at|date:"d M Y H:i" }}</p>
         </div>
         <hr>
     {% empty %}

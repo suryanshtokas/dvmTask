@@ -1,5 +1,7 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
     <h2>Welcome, {{ user.username }} (Passenger)</h2>
-    <p>Passenger Dashboard</p>
+    <a href="{% url 'carpool_request_create' %}">New Carpool Request</a> |
+    <a href="{% url 'carpool_request_list' %}">My Requests</a> |
+    <a href="{% url 'wallet' %}">My Wallet (${{ user.wallet.balance }})</a>
 {% endblock %}

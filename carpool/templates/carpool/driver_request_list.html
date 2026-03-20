@@ -1,18 +1,17 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
     <h2>Carpool Requests for your Trip</h2>
-    <p>Trip: {{ trip.start_node }} → {{ trip.end_node }}</p>
+    <p>Trip: {{ trip.start_node }} → {{ trip.end_node }} ({{ trip.status }})</p>
+    <a href="{% url 'trip_detail' trip.pk %}">Back to Trip Details</a>
     <hr>
     {% for carpool_request in carpool_requests %}
-    {% for id in offered_request_ids %}
-    <p>offered id: {{ id }}</p>
-{% endfor %}
         <div>
-            <p>Passenger: {{ carpool_request.passenger.username }}</p>
-            <p>Pickup: {{ carpool_request.pickup_node }}</p>
-            <p>Dropoff: {{ carpool_request.dropoff_node }}</p>
+            <p><strong>Passenger:</strong> {{ carpool_request.passenger.username }}</p>
+            <p><strong>Pickup:</strong> {{ carpool_request.pickup_node }}</p>
+            <p><strong>Dropoff:</strong> {{ carpool_request.dropoff_node }}</p>
+            <p><strong>Requested:</strong> {{ carpool_request.created_at|date:"d M Y" }}</p>
             {% if carpool_request.pk in offered_request_ids %}
-                <p>Offer already made</p>
+                <p>✅ Offer already made</p>
             {% else %}
                 <form method="POST" action="{% url 'carpool_offer_create' trip.pk carpool_request.pk %}">
                     {% csrf_token %}

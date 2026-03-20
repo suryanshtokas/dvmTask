@@ -5,11 +5,13 @@
     <hr>
     {% for trip in trips %}
         <div>
-            <p>{{ trip.start_node }} → {{ trip.end_node }} ({{ trip.status }})</p>
-            <a href="{% url 'trip_detail' trip.pk %}">View Details</a>
+            <p><strong>{{ trip.start_node }} → {{ trip.end_node }}</strong> ({{ trip.status }})</p>
+            <p>Max Passengers: {{ trip.max_passengers }} | Created: {{ trip.created_at|date:"d M Y" }}</p>
+            <a href="{% url 'trip_detail' trip.pk %}">View Details</a> |
+            <a href="{% url 'driver_carpool_request_list' trip.pk %}">View Carpool Requests</a>
         </div>
         <hr>
     {% empty %}
-        <p>You have no trips yet.</p>
+        <p>No trips yet. <a href="{% url 'trip_create' %}">Create one!</a></p>
     {% endfor %}
 {% endblock %}

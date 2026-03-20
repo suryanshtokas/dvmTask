@@ -1,5 +1,7 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
     <h2>Welcome, {{ user.username }} (Driver)</h2>
-    <p>Driver Dashboard <br>View Trips-> <a href="{% url 'trip_list' %}">My Trips</a></p>
+    <a href="{% url 'trip_create' %}">Create New Trip</a> |
+    <a href="{% url 'trip_list' %}">View My Trips</a> |
+    <a href="{% url 'driver_earnings' %}">View Earnings</a>
 {% endblock %}

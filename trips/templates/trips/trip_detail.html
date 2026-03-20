@@ -4,6 +4,7 @@
     <p>Status: {{ trip.status }}</p>
     <p>Current Node: {{ trip.current_node }}</p>
     <p>Max Passengers: {{ trip.max_passengers }}</p>
+    <p>Created: {{ trip.created_at|date:"d M Y" }}</p>
 
     <h3>Route</h3>
     <ul>
@@ -15,10 +16,14 @@
         {% endfor %}
     </ul>
 
-    {% if trip.status == 'pending' %}
+    <a href="{% url 'driver_carpool_request_list' trip.pk %}">View Carpool Requests</a>
+
+    {% if trip.status == 'pending' or trip.status == 'active' %}
         <form method="POST" action="{% url 'trip_cancel' trip.pk %}">
             {% csrf_token %}
             <button type="submit">Cancel Trip</button>
         </form>
     {% endif %}
+
+    <br><a href="{% url 'trip_list' %}">Back to My Trips</a>
 {% endblock %}

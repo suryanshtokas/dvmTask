@@ -5,10 +5,11 @@
     <hr>
     {% for request in carpool_requests %}
         <div>
-            <p>{{ request.pickup_node }} → {{ request.dropoff_node }} ({{ request.status }})</p>
+            <p><strong>{{ request.pickup_node }} → {{ request.dropoff_node }}</strong> ({{ request.status }})</p>
+            <p>Created: {{ request.created_at|date:"d M Y" }}</p>
             <a href="{% url 'carpool_request_detail' request.pk %}">View Offers</a>
             {% if request.status == 'pending' %}
-                <form method="POST" action="{% url 'carpool_request_cancel' request.pk %}">
+                <form method="POST" action="{% url 'carpool_request_cancel' request.pk %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit">Cancel</button>
                 </form>
@@ -16,6 +17,6 @@
         </div>
         <hr>
     {% empty %}
-        <p>No carpool requests yet.</p>
+        <p>No carpool requests yet. <a href="{% url 'carpool_request_create' %}">Make one!</a></p>
     {% endfor %}
 {% endblock %}

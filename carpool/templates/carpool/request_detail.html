@@ -4,7 +4,7 @@
     <p>Status: {{ carpool_request.status }}</p>
     <hr>
 
-    {% if carpool_request.status == 'confirmed' %}
+    {% if carpool_request.status == 'confirmed' or carpool_request.status == 'completed' %}
         {% for offer in carpool_request.offers.all %}
             {% if offer.status == 'accepted' %}
                 <h3>Confirmed Carpool Details</h3>
@@ -32,7 +32,9 @@
             </div>
             <hr>
         {% empty %}
-            <p>No offers yet.</p>
+            <p>No offers yet. Check back later!</p>
         {% endfor %}
     {% endif %}
+
+    <br><a href="{% url 'carpool_request_list' %}">Back to My Requests</a>
 {% endblock %}
