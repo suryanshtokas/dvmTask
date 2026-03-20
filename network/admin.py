@@ -9,6 +9,6 @@ class NodeAdmin(admin.ModelAdmin):
 
 @admin.register(Edge)
 class EdgeAdmin(admin.ModelAdmin):
-    list_display = ["id", "from_node", "to_node"]
+    list_display = ["id", "from_node", "to_node", "weight"]
     search_fields = ["from_node__name", "to_node__name"]
     list_filter = ["from_node", "to_node"]

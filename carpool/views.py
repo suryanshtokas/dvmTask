@@ -139,9 +139,11 @@ class DriverCarpoolRequestListView(DriverRequiredMixin, ListView):
         remaining_route = get_remaining_route(trip)
         remaining_node_ids = [node.id for node in remaining_route]
 
-        # filtering out requests whose proximity_nodes in remaining route
-        return CarpoolRequest.objects.filter(status="pending",
-            proximity_nodes__id__in=remaining_node_ids).distinct()
+        qs = CarpoolRequest.objects.filter(
+            status="pending",
+            proximity_nodes__id__in=remaining_node_ids
+        ).distinct()
+        return qs
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -151,8 +153,6 @@ class DriverCarpoolRequestListView(DriverRequiredMixin, ListView):
         offered_request_ids = CarpoolOffer.objects.filter(trip=trip).values_list("carpool_request_id", flat=True)
         context["offered_request_ids"] = set(offered_request_ids)
 
-        print("CONTEXT KEYS:", context.keys())
-        print("OFFERED IDS IN CONTEXT:", context.get("offered_request_ids"))
 
         return context  
     

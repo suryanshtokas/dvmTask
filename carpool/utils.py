@@ -2,10 +2,12 @@ from collections import deque
 from itertools import permutations
 from network.models import Node, Edge
 from trips.utils import find_route, find_route_cost
-from .models import FareConfig, CarpoolOffer, CarpoolRequest
+from .models import FareConfig, CarpoolOffer, CarpoolRequest    
 
 
 def get_proximity_nodes(node, max_hops=2):
+    from network.models import Node
+    
     visited = set()
     visited.add(node.id)
     queue = deque()
@@ -17,13 +19,13 @@ def get_proximity_nodes(node, max_hops=2):
         if hops >= max_hops:
             continue
 
-        outgoing = Node.objects.filter(outgoing_edges__from_node=current_node)
-        incoming = Node.objects.filter(incoming_edges__to_node=current_node)
+        outgoing = Node.objects.filter(incoming_edges__from_node=current_node)
+        incoming = Node.objects.filter(outgoing_edges__to_node=current_node)
 
         for neighbour in list(outgoing) + list(incoming):
             if neighbour.id not in visited:
                 visited.add(neighbour.id)
-                queue.append((neighbour, hops +1))
+                queue.append((neighbour, hops + 1))
 
     return Node.objects.filter(id__in=visited)
 
