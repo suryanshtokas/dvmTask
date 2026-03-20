@@ -12,4 +12,4 @@ creds.txt
 
 # Environment Variables
 .env.prod
-.env.prod.db
+.env.*
