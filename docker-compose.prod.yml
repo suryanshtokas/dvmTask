@@ -26,8 +26,10 @@ services:
     build: ./nginx
     volumes:
       - static_volume:/home/app/web/staticfiles
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - web
 
