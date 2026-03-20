@@ -72,9 +72,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # allauth settings
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
