@@ -3,8 +3,8 @@ version: '3.8'
 services:
   web:
     build:
-      context: ./app
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: DOCKERFILE.prod
     command: gunicorn carpooling.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
